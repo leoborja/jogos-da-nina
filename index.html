@@ -162,6 +162,29 @@
   window.addEventListener('pointerup', () => { dragging = false; });
   window.addEventListener('pointercancel', () => { dragging = false; });
 
+  // ---------- Teclado (setas ou WASD no PC) ----------
+  const teclas = {};
+  const mapaTeclas = {
+    ArrowUp: 'cima', ArrowDown: 'baixo', ArrowLeft: 'esq', ArrowRight: 'dir',
+    w: 'cima', s: 'baixo', a: 'esq', d: 'dir',
+    W: 'cima', S: 'baixo', A: 'esq', D: 'dir'
+  };
+  window.addEventListener('keydown', e => {
+    const dir = mapaTeclas[e.key];
+    if (!dir) return;
+    teclas[dir] = true;
+    if (!hideDica) { hideDica = true; dicaEl.style.opacity = 0; }
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (err) {}
+    e.preventDefault();
+  });
+  window.addEventListener('keyup', e => {
+    const dir = mapaTeclas[e.key];
+    if (dir) teclas[dir] = false;
+  });
+
   // ---------- Desenho da Magali (imagem oficial) ----------
   function desenhaMagali(x, y, face, eating, bob) {
     const prop = magaliImg.naturalWidth ? magaliImg.naturalWidth / magaliImg.naturalHeight : 0.667;
@@ -313,6 +336,14 @@
   function frame(now) {
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
+
+    // movimento pelas setas do teclado (alvo um pouco à frente = ~440 px/s)
+    const kx = (teclas.dir ? 1 : 0) - (teclas.esq ? 1 : 0);
+    const ky = (teclas.baixo ? 1 : 0) - (teclas.cima ? 1 : 0);
+    if (kx || ky) {
+      const norm = Math.hypot(kx, ky);
+      setAlvo(magali.x + (kx / norm) * 55, magali.y + (ky / norm) * 55);
+    }
 
     // movimento da Magali (segue o dedo com suavidade)
     const dx = magali.tx - magali.x;
