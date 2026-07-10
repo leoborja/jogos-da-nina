@@ -36,9 +36,20 @@
     white-space: nowrap;
     z-index: 10;
   }
+  #credito {
+    position: fixed;
+    bottom: 6px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+    color: #2e6e2e;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+    pointer-events: none;
+    z-index: 10;
+    white-space: nowrap;
+  }
   #dica {
     position: fixed;
-    bottom: 20px; left: 50%;
+    bottom: 34px; left: 50%;
     transform: translateX(-50%);
     background: rgba(255,255,255,0.85);
     border-radius: 999px;
@@ -55,6 +66,7 @@
 <canvas id="game"></canvas>
 <div id="placar">🍉 0</div>
 <div id="dica">Arraste a Magali até a melancia! 👆</div>
+<div id="credito">feito por Marina Vaz 💚</div>
 
 <script>
 (() => {
