@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7ed0e8">
+<link rel="icon" href="icone.png">
+<link rel="apple-touch-icon" href="icone.png">
 <title>Jogos da Nina 🎮</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,6 +28,27 @@
   }
 
   /* ---------- topo ---------- */
+  .topo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 3vw, 26px);
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  .logo {
+    width: clamp(134px, 38vw, 176px);
+    height: auto;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    background: #aee9f5;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+    animation: flutuaLogo 4.5s ease-in-out infinite;
+  }
+  @keyframes flutuaLogo {
+    0%, 100% { transform: translateY(0) rotate(-2deg) }
+    50%      { transform: translateY(-9px) rotate(2deg) }
+  }
   h1 {
     font-size: clamp(34px, 9vw, 56px);
     color: #e63329;
@@ -162,8 +185,13 @@
 </head>
 <body>
 
-<h1>🎮 Jogos da Nina</h1>
-<p class="sub">Escolhe um jogo pra brincar! 👇</p>
+<div class="topo">
+  <img class="logo" src="nina.png" alt="Nina no balão">
+  <div>
+    <h1>Jogos da Nina</h1>
+    <p class="sub">Escolhe um jogo pra brincar! 👇</p>
+  </div>
+</div>
 
 <div class="jogos">
 
