@@ -2,425 +2,210 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Magali Melancia 🍉</title>
+<meta name="theme-color" content="#7ed0e8">
+<title>Jogos da Nina 🎮</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    touch-action: none;
+    min-height: 100%;
     -webkit-user-select: none; user-select: none;
-    background: #aee9f5;
+    -webkit-tap-highlight-color: transparent;
     font-family: "Comic Sans MS", "Chalkboard SE", cursive, sans-serif;
+    background: linear-gradient(170deg, #aee9f5 0%, #d8f7e0 55%, #ffe6a7 100%);
+    background-attachment: fixed;
+    color: #2e5e2e;
   }
-  #game {
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 16px 12px;
+    overflow-x: hidden;
+  }
+
+  /* ---------- topo ---------- */
+  h1 {
+    font-size: clamp(34px, 9vw, 56px);
+    color: #e63329;
+    text-shadow: 3px 3px 0 #fff, 5px 5px 0 rgba(0,0,0,0.08);
+    text-align: center;
+    line-height: 1.1;
+    animation: gingado 3.5s ease-in-out infinite;
+  }
+  @keyframes gingado {
+    0%, 100% { transform: rotate(-1.5deg) }
+    50%      { transform: rotate(1.5deg) }
+  }
+  .sub {
+    margin-top: 8px;
+    font-size: clamp(16px, 4.5vw, 21px);
+    color: #2e7d32;
+    text-align: center;
+  }
+
+  /* ---------- cartões ---------- */
+  .jogos {
+    width: 100%;
+    max-width: 860px;
+    margin-top: 26px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .jogo {
     display: block;
-    width: 100%; height: 100%;
-    touch-action: none;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border: 5px solid #fff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  #placar {
-    position: fixed;
-    top: 12px; left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,255,255,0.9);
-    border: 4px solid #2e9e44;
+  .jogo:active { transform: scale(0.96); }
+  @media (hover: hover) {
+    .jogo:hover { transform: translateY(-6px) rotate(-1deg); box-shadow: 0 14px 28px rgba(0,0,0,0.22); }
+  }
+  .capa {
+    position: relative;
+    height: 190px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .capa img { height: 150px; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.25)); }
+  .nome {
+    padding: 12px 14px 14px;
+    text-align: center;
+  }
+  .nome b {
+    display: block;
+    font-size: 25px;
+    color: #d33;
+  }
+  .nome span {
+    display: block;
+    margin-top: 3px;
+    font-size: 15px;
+    color: #4a7a4a;
+  }
+  .nome .botao {
+    display: inline-block;
+    margin-top: 10px;
+    background: #2e9e44;
+    color: #fff;
     border-radius: 999px;
     padding: 8px 26px;
-    font-size: 34px;
+    font-size: 20px;
     font-weight: bold;
-    color: #d33;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 10;
+    box-shadow: 0 4px 0 #1f7530;
   }
-  #credito {
-    position: fixed;
-    bottom: 6px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 15px;
+
+  /* capa 1 — melancia */
+  .capa-melancia { background: linear-gradient(180deg, #aee9f5, #b6ecab); }
+  .capa-melancia .fruta {
+    position: absolute;
+    font-size: 40px;
+    animation: flutua 2.6s ease-in-out infinite;
+  }
+  .capa-melancia .f1 { left: 12%;  top: 22%; animation-delay: 0s; }
+  .capa-melancia .f2 { right: 12%; top: 14%; animation-delay: .5s; }
+  .capa-melancia .f3 { right: 22%; top: 52%; animation-delay: 1s; font-size: 30px; }
+  @keyframes flutua {
+    0%, 100% { transform: translateY(0) rotate(-6deg) }
+    50%      { transform: translateY(-10px) rotate(6deg) }
+  }
+
+  /* capa 2 — memória */
+  .capa-memoria { background: linear-gradient(180deg, #f6c7e8, #cbb6f2); }
+  .capa-memoria .carta {
+    position: absolute;
+    bottom: 12px;
+    width: 92px; height: 118px;
+    background: #fff;
+    border: 4px solid #fff;
+    border-radius: 14px;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.22);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .capa-memoria .carta img { height: 96px; filter: none; }
+  .capa-memoria .c1 { transform: rotate(-13deg) translateX(-96px); }
+  .capa-memoria .c2 { transform: rotate(2deg); z-index: 2; }
+  .capa-memoria .c3 {
+    transform: rotate(13deg) translateX(96px);
+    background: repeating-linear-gradient(45deg, #ff4f58 0 14px, #e63329 14px 28px);
+    font-size: 44px;
+  }
+
+  /* capa 3 — em breve */
+  .embreve { opacity: 0.75; }
+  .capa-breve {
+    background: linear-gradient(180deg, #ffe6a7, #ffd0d0);
+    align-items: center;
+    font-size: 74px;
+  }
+  .embreve .nome .botao { background: #b9a06a; box-shadow: 0 4px 0 #907c50; }
+
+  footer {
+    margin: 26px 0 6px;
+    font-size: 16px;
     color: #2e6e2e;
     text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-    pointer-events: none;
-    z-index: 10;
-    white-space: nowrap;
-  }
-  #dica {
-    position: fixed;
-    bottom: 34px; left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,255,255,0.85);
-    border-radius: 999px;
-    padding: 10px 22px;
-    font-size: 20px;
-    color: #2e6e2e;
-    pointer-events: none;
-    z-index: 10;
-    transition: opacity 0.8s;
+    text-align: center;
   }
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-<div id="placar">🍉 0</div>
-<div id="dica">Arraste a Magali até a melancia! 👆</div>
-<div id="credito">feito por Marina Vaz 💚</div>
 
-<script>
-(() => {
-  const canvas = document.getElementById('game');
-  const ctx = canvas.getContext('2d');
-  const placarEl = document.getElementById('placar');
-  const dicaEl = document.getElementById('dica');
+<h1>🎮 Jogos da Nina</h1>
+<p class="sub">Escolhe um jogo pra brincar! 👇</p>
 
-  // imagem oficial da Magali
-  const magaliImg = new Image();
-  magaliImg.src = 'magali.png';
-  const MAG_H = 170; // altura dela na tela
+<div class="jogos">
 
-  let W = 0, H = 0, DPR = 1;
-  function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * DPR;
-    canvas.height = H * DPR;
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  }
-  window.addEventListener('resize', resize);
-  resize();
+  <a class="jogo" href="melancia/">
+    <div class="capa capa-melancia">
+      <span class="fruta f1">🍉</span>
+      <span class="fruta f2">🍉</span>
+      <span class="fruta f3">🍉</span>
+      <img src="melancia/magali.png" alt="Magali">
+    </div>
+    <div class="nome">
+      <b>Magali Melancia</b>
+      <span>Corre atrás das melancias e come todas! 🍉</span>
+      <span class="botao">JOGAR</span>
+    </div>
+  </a>
 
-  // ---------- Estado ----------
-  const magali = {
-    x: W / 2, y: H / 2,
-    tx: W / 2, ty: H / 2,   // alvo (dedo)
-    r: 62,                   // raio de colisão
-    eating: 0,               // timer da animação de comer
-    face: 1,                 // 1 = olhando pra direita, -1 esquerda
-    bob: 0
-  };
-  let score = 0;
-  const melancias = [];
-  const particulas = [];
-  const nhams = [];   // textos "NHAM!" flutuando
-  const nuvens = [];
-  let dragging = false;
-  let hideDica = false;
+  <a class="jogo" href="memoria/">
+    <div class="capa capa-memoria">
+      <div class="carta c1"><img src="memoria/img/monica.png" alt="Mônica"></div>
+      <div class="carta c2"><img src="memoria/img/cebolinha.png" alt="Cebolinha"></div>
+      <div class="carta c3">🍉</div>
+    </div>
+    <div class="nome">
+      <b>Memória da Turma</b>
+      <span>Vira as cartas e acha os pares iguais! 🧠</span>
+      <span class="botao">JOGAR</span>
+    </div>
+  </a>
 
-  for (let i = 0; i < 4; i++) {
-    nuvens.push({
-      x: Math.random() * W,
-      y: 40 + Math.random() * (H * 0.25),
-      s: 0.6 + Math.random() * 0.8,
-      v: 8 + Math.random() * 12
-    });
-  }
+  <div class="jogo embreve">
+    <div class="capa capa-breve">🎁</div>
+    <div class="nome">
+      <b>Em breve...</b>
+      <span>Tem jogo novo chegando pra você! ✨</span>
+      <span class="botao">AGUARDE</span>
+    </div>
+  </div>
 
-  function novaMelancia() {
-    const margem = 70;
-    let x, y, tenta = 0;
-    do {
-      x = margem + Math.random() * (W - margem * 2);
-      y = margem + 60 + Math.random() * (H - margem * 2 - 60);
-      tenta++;
-    } while (Math.hypot(x - magali.x, y - magali.y) < 200 && tenta < 30);
-    melancias.push({ x, y, r: 34, t: Math.random() * Math.PI * 2, nascendo: 0 });
-  }
-  for (let i = 0; i < 3; i++) novaMelancia();
+</div>
 
-  // ---------- Som ----------
-  let audioCtx = null;
-  function tocaNham() {
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const t = audioCtx.currentTime;
-      // "nhac" - dois bipes alegres
-      [ [523, 0], [784, 0.09] ].forEach(([f, d]) => {
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.type = 'triangle';
-        o.frequency.setValueAtTime(f, t + d);
-        o.frequency.exponentialRampToValueAtTime(f * 1.5, t + d + 0.08);
-        g.gain.setValueAtTime(0.25, t + d);
-        g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.15);
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start(t + d); o.stop(t + d + 0.16);
-      });
-    } catch (e) { /* sem som, sem problema */ }
-  }
+<footer>feito por Marina Vaz 💚</footer>
 
-  // ---------- Controles (dedo ou mouse) ----------
-  function setAlvo(cx, cy) {
-    magali.tx = Math.max(40, Math.min(W - 40, cx));
-    magali.ty = Math.max(80, Math.min(H - 40, cy));
-  }
-  canvas.addEventListener('pointerdown', e => {
-    dragging = true;
-    setAlvo(e.clientX, e.clientY);
-    if (!hideDica) { hideDica = true; dicaEl.style.opacity = 0; }
-    // cria o contexto de áudio no primeiro toque (gesto do usuário)
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    } catch (err) {}
-    e.preventDefault();
-  });
-  canvas.addEventListener('pointermove', e => {
-    if (dragging) { setAlvo(e.clientX, e.clientY); e.preventDefault(); }
-  });
-  window.addEventListener('pointerup', () => { dragging = false; });
-  window.addEventListener('pointercancel', () => { dragging = false; });
-
-  // ---------- Teclado (setas ou WASD no PC) ----------
-  const teclas = {};
-  const mapaTeclas = {
-    ArrowUp: 'cima', ArrowDown: 'baixo', ArrowLeft: 'esq', ArrowRight: 'dir',
-    w: 'cima', s: 'baixo', a: 'esq', d: 'dir',
-    W: 'cima', S: 'baixo', A: 'esq', D: 'dir'
-  };
-  window.addEventListener('keydown', e => {
-    const dir = mapaTeclas[e.key];
-    if (!dir) return;
-    teclas[dir] = true;
-    if (!hideDica) { hideDica = true; dicaEl.style.opacity = 0; }
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    } catch (err) {}
-    e.preventDefault();
-  });
-  window.addEventListener('keyup', e => {
-    const dir = mapaTeclas[e.key];
-    if (dir) teclas[dir] = false;
-  });
-
-  // ---------- Desenho da Magali (imagem oficial) ----------
-  function desenhaMagali(x, y, face, eating, bob) {
-    const prop = magaliImg.naturalWidth ? magaliImg.naturalWidth / magaliImg.naturalHeight : 0.667;
-    const w = MAG_H * prop;
-    ctx.save();
-    ctx.translate(x, y + Math.sin(bob) * 4);
-
-    // sombra no chao
-    ctx.fillStyle = 'rgba(0,0,0,0.12)';
-    ctx.beginPath();
-    ctx.ellipse(0, MAG_H / 2 - 4, w * 0.42, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // balancinho ao andar
-    ctx.rotate(Math.sin(bob * 0.8) * 0.03);
-
-    // animacao de comer: pula e estica de alegria
-    if (eating > 0) {
-      const s = Math.sin(eating * 22) * 0.09;
-      ctx.scale(1 + s, 1 - s);
-      ctx.rotate(Math.sin(eating * 18) * 0.09);
-    }
-
-    ctx.scale(face, 1);
-    if (magaliImg.complete && magaliImg.naturalWidth) {
-      ctx.drawImage(magaliImg, -w / 2, -MAG_H / 2, w, MAG_H);
-    }
-    ctx.restore();
-  }
-
-  // ---------- Desenho da melancia (fatia) ----------
-  function desenhaMelancia(m) {
-    const esc = m.nascendo < 1 ? m.nascendo : 1 + Math.sin(m.t) * 0.05;
-    ctx.save();
-    ctx.translate(m.x, m.y + Math.sin(m.t * 1.5) * 4);
-    ctx.scale(esc, esc);
-    ctx.rotate(Math.sin(m.t) * 0.08);
-
-    // sombra
-    ctx.fillStyle = 'rgba(0,0,0,0.1)';
-    ctx.beginPath();
-    ctx.ellipse(0, 34, 30, 7, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // casca
-    ctx.fillStyle = '#2e9e44';
-    ctx.beginPath();
-    ctx.arc(0, 0, 34, 0, Math.PI, false);
-    ctx.closePath();
-    ctx.fill();
-    // casca clara
-    ctx.fillStyle = '#bff0c0';
-    ctx.beginPath();
-    ctx.arc(0, 0, 29, 0, Math.PI, false);
-    ctx.closePath();
-    ctx.fill();
-    // polpa
-    ctx.fillStyle = '#ff4f58';
-    ctx.beginPath();
-    ctx.arc(0, 0, 26, 0, Math.PI, false);
-    ctx.closePath();
-    ctx.fill();
-    // sementes
-    ctx.fillStyle = '#222';
-    [[-12, 12], [0, 18], [12, 12], [-5, 7], [7, 7]].forEach(([sx, sy]) => {
-      ctx.beginPath();
-      ctx.ellipse(sx, sy, 2, 3.2, 0.3, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    ctx.restore();
-  }
-
-  // ---------- Comer ----------
-  function come(m, idx) {
-    score++;
-    placarEl.textContent = '🍉 ' + score;
-    placarEl.style.transform = 'translateX(-50%) scale(1.25)';
-    setTimeout(() => { placarEl.style.transform = 'translateX(-50%) scale(1)'; }, 150);
-    magali.eating = 0.6;
-    tocaNham();
-
-    // partículas: pedacinhos de melancia + sementes
-    for (let i = 0; i < 14; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const v = 60 + Math.random() * 160;
-      particulas.push({
-        x: m.x, y: m.y,
-        vx: Math.cos(a) * v, vy: Math.sin(a) * v - 80,
-        vida: 0.7 + Math.random() * 0.4,
-        cor: Math.random() < 0.3 ? '#222' : (Math.random() < 0.5 ? '#ff4f58' : '#2e9e44'),
-        r: 3 + Math.random() * 4
-      });
-    }
-    const frases = ['NHAM!', 'HMMM!', 'DELÍCIA!', 'QUE DOCE!', '🍉😋'];
-    nhams.push({
-      x: m.x, y: m.y - 40,
-      txt: score % 10 === 0 ? '⭐ ' + score + '! ⭐' : frases[Math.floor(Math.random() * frases.length)],
-      vida: 1.2,
-      grande: score % 10 === 0
-    });
-    melancias.splice(idx, 1);
-    setTimeout(novaMelancia, 400 + Math.random() * 600);
-  }
-
-  // ---------- Fundo ----------
-  function desenhaFundo(dt) {
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, '#aee9f5');
-    grad.addColorStop(0.65, '#d8f7e0');
-    grad.addColorStop(1, '#b6ecab');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
-    // sol
-    ctx.fillStyle = '#ffde59';
-    ctx.beginPath();
-    ctx.arc(W - 70, 80, 38, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,222,89,0.6)';
-    ctx.lineWidth = 4;
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
-      ctx.beginPath();
-      ctx.moveTo(W - 70 + Math.cos(a) * 46, 80 + Math.sin(a) * 46);
-      ctx.lineTo(W - 70 + Math.cos(a) * 58, 80 + Math.sin(a) * 58);
-      ctx.stroke();
-    }
-
-    // nuvens
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    nuvens.forEach(n => {
-      n.x += n.v * dt;
-      if (n.x > W + 80) n.x = -80;
-      ctx.save();
-      ctx.translate(n.x, n.y);
-      ctx.scale(n.s, n.s);
-      ctx.beginPath();
-      ctx.arc(0, 0, 22, 0, Math.PI * 2);
-      ctx.arc(24, 4, 17, 0, Math.PI * 2);
-      ctx.arc(-24, 4, 17, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-  }
-
-  // ---------- Loop ----------
-  let last = performance.now();
-  function frame(now) {
-    const dt = Math.min((now - last) / 1000, 0.05);
-    last = now;
-
-    // movimento pelas setas do teclado (alvo um pouco à frente = ~440 px/s)
-    const kx = (teclas.dir ? 1 : 0) - (teclas.esq ? 1 : 0);
-    const ky = (teclas.baixo ? 1 : 0) - (teclas.cima ? 1 : 0);
-    if (kx || ky) {
-      const norm = Math.hypot(kx, ky);
-      setAlvo(magali.x + (kx / norm) * 55, magali.y + (ky / norm) * 55);
-    }
-
-    // movimento da Magali (segue o dedo com suavidade)
-    const dx = magali.tx - magali.x;
-    const dy = magali.ty - magali.y;
-    magali.x += dx * Math.min(1, dt * 8);
-    magali.y += dy * Math.min(1, dt * 8);
-    if (Math.abs(dx) > 4) magali.face = dx > 0 ? 1 : -1;
-    magali.bob += dt * (Math.hypot(dx, dy) > 10 ? 14 : 4);
-    if (magali.eating > 0) magali.eating -= dt;
-
-    // colisão com melancias
-    for (let i = melancias.length - 1; i >= 0; i--) {
-      const m = melancias[i];
-      m.t += dt * 2;
-      if (m.nascendo < 1) m.nascendo = Math.min(1, m.nascendo + dt * 3);
-      if (Math.hypot(m.x - magali.x, m.y - magali.y) < magali.r + m.r - 10) {
-        come(m, i);
-      }
-    }
-
-    // desenha tudo
-    desenhaFundo(dt);
-    melancias.forEach(desenhaMelancia);
-    desenhaMagali(magali.x, magali.y, magali.face, magali.eating, magali.bob);
-
-    // partículas
-    for (let i = particulas.length - 1; i >= 0; i--) {
-      const p = particulas[i];
-      p.vida -= dt;
-      if (p.vida <= 0) { particulas.splice(i, 1); continue; }
-      p.vy += 400 * dt;
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      ctx.globalAlpha = Math.min(1, p.vida * 2);
-      ctx.fillStyle = p.cor;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-
-    // textos NHAM!
-    for (let i = nhams.length - 1; i >= 0; i--) {
-      const n = nhams[i];
-      n.vida -= dt;
-      if (n.vida <= 0) { nhams.splice(i, 1); continue; }
-      n.y -= 40 * dt;
-      ctx.globalAlpha = Math.min(1, n.vida * 1.5);
-      ctx.font = 'bold ' + (n.grande ? 44 : 30) + 'px "Comic Sans MS", cursive, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#fff';
-      ctx.strokeText(n.txt, n.x, n.y);
-      ctx.fillStyle = n.grande ? '#e6a817' : '#e63329';
-      ctx.fillText(n.txt, n.x, n.y);
-      ctx.globalAlpha = 1;
-    }
-
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-
-  // hook para testes automatizados
-  window.__debug = { magali, melancias, getScore: () => score };
-})();
-</script>
 </body>
 </html>

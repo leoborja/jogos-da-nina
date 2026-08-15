@@ -1,40 +1,54 @@
-# 🍉 Magali Melancia
+# 🎮 Jogos da Nina
 
-Jogo HTML simples feito para uma criança de 6 anos: arraste a Magali (Turma da Mônica) pela tela para comer melancias e ganhar pontos. Sem fases, sem game over — só diversão infinita.
+Coleção de joguinhos HTML feitos para a Nina, uma criança de 6 anos. Tudo em português, sem game over, sem punição, sem anúncio — só reforço positivo. Abre no celular, no tablet ou no PC, sem instalar nada.
 
-**🎮 Jogar agora:** https://leoborja.github.io/magali-melancia/
+**🕹 Jogar agora:** https://leoborja.github.io/jogos-da-nina/
 
 *feito por Marina Vaz 💚*
 
 ---
 
-## Como jogar
+## Os jogos
+
+### 🍉 Magali Melancia — [`/melancia/`](melancia/)
+
+Arraste a Magali pela tela para comer melancias e ganhar pontos. Sem fases, sem game over — diversão infinita.
 
 | Onde | Controle |
 |------|----------|
 | 📱 Celular | Arraste o dedo pela tela — a Magali segue o toque |
 | 💻 PC | Setas do teclado ou WASD (ou arraste com o mouse) |
 
-Cada melancia comida vale 1 ponto no placar 🍉. A cada 10 pontos aparece uma celebração especial ⭐.
+- Magali oficial que balança ao andar, vira para o lado que se move e dá pulinhos ao comer
+- 3 melancias sempre na tela, quicando suavemente
+- Ao comer: pedacinhos e sementes voam, aparece "NHAM!"/"DELÍCIA!" e toca um bipe alegre
+- Placar que pulsa a cada ponto; celebração especial ⭐ a cada 10 melancias
+- Cenário com céu, sol, nuvens passando e gramado
 
-## O que tem no jogo
+### 🧠 Memória da Turma — [`/memoria/`](memoria/)
 
-- **Magali oficial** (imagem clássica com fundo transparente) que balança ao andar, vira para o lado que se move e dá pulinhos de alegria ao comer
-- **3 melancias** sempre na tela, em posições aleatórias, quicando suavemente
-- **Ao comer:** pedacinhos e sementes voam, aparece "NHAM!"/"DELÍCIA!"/"QUE DOCE!" e toca um bipe alegre (WebAudio)
-- **Placar** grande no topo que pulsa a cada ponto
-- **Cenário:** céu com gradiente, sol, nuvens passando, gramado
-- Dica inicial ("Arraste a Magali até a melancia! 👆") que some no primeiro toque
+Jogo da memória com a Turma da Mônica: Mônica, Magali, Cebolinha, Cascão, Chico Bento, Franjinha, Bidu e Titi.
 
-## Técnico
+- **Espiadinha:** todas as cartas aparecem por 1,2s no começo de cada rodada
+- **Erro não pune:** as cartas viram de volta com calma, sem som ruim nem perda de ponto
+- **Nível sobe sozinho:** 4 pares → 6 pares → 8 pares, sempre depois de vencer
+- **Ao acertar:** a carta fica verde, solta ⭐✨💚 e toca um som alegre; o nome do personagem aparece embaixo (ajuda a ler!)
+- **Vitória:** confete, "PARABÉNS!" e um troféu salvo no navegador (🏆 N jogos completos)
+- Grade se reorganiza sozinha para caber em qualquer tela, em pé ou deitada
 
-- **Um único `index.html`** (canvas 2D, JavaScript puro, zero dependências) + `magali.png` (sprite)
-- Pointer Events (funciona com dedo e mouse), `touch-action: none` para não rolar a página
-- Movimento por interpolação (lerp) — a Magali persegue o alvo com suavidade
-- Teclado: setas/WASD movem o alvo ~55px à frente da posição atual (≈440 px/s)
-- Som gerado por osciladores WebAudio (contexto criado no primeiro toque/tecla, exigência dos navegadores)
-- Canvas com devicePixelRatio (máx. 2x) para ficar nítido em telas retina
-- Hook `window.__debug` expõe `{magali, melancias, getScore()}` para testes automatizados
+## Estrutura
+
+```
+index.html          → home: escolhe o jogo
+melancia/           → jogo 1 (canvas 2D)
+  index.html
+  magali.png
+memoria/            → jogo 2 (DOM + CSS 3D)
+  index.html
+  img/*.png         → 8 personagens (fundo transparente)
+```
+
+Cada jogo é **um único `index.html`** com CSS e JS inline, zero dependências, e tem um botão 🏠 que volta para a home.
 
 ## Rodar local
 
@@ -44,11 +58,9 @@ python3 -m http.server 8080
 # abrir http://localhost:8080
 ```
 
-(Também funciona abrindo o `index.html` direto no navegador.)
-
 ## Deploy
 
-GitHub Pages servindo a branch `main` deste repositório. Para publicar mudanças:
+GitHub Pages servindo a branch `main`. Para publicar:
 
 ```bash
 git add . && git commit -m "mensagem" && git push
@@ -57,23 +69,30 @@ git add . && git commit -m "mensagem" && git push
 
 ## 💡 Ideias de melhorias futuras
 
-Priorizadas pelo impacto para uma criança de 6 anos:
+**Magali Melancia:**
+1. 🥇 Melancia dourada rara — vale 5 pontos, brilha, confete e som especial
+2. 🎉 Festa a cada 10 melancias — confete na tela toda e "PARABÉNS!" gigante
+3. 🔊 Sons mais divertidos — "nhac nhac" de verdade; arrotinho após 5 seguidas
+4. 🏆 Recorde salvo no navegador
+5. 🏃 Melancias fugitivas depois de 15 pontos
+6. 🐱 Mingau passeando e "roubando" melancias (sem tirar ponto)
 
-**Combo recomendado (pouco código, muito impacto):**
-1. 🥇 **Melancia dourada rara** — vale 5 pontos, brilha, confete e som especial
-2. 🎉 **Festa a cada 10 melancias** — confete na tela toda, Magali dá um pulão, "PARABÉNS!" gigante
-3. 🔊 **Sons mais divertidos** — "nhac nhac" mastigando de verdade; arrotinho após 5 seguidas rápidas
-4. 🏆 **Recorde salvo** — "Seu recorde: 47 🍉" via localStorage
+**Memória da Turma:**
+7. 🔉 Falar o nome do personagem ao achar o par (speechSynthesis)
+8. 🎴 Mais personagens (Titi, Marina, Sansão, Floquinho, Franjinha…) para níveis maiores
+9. 👯 Modo dois jogadores (ela contra alguém, sem placar competitivo)
 
-**Backlog:**
-5. 🏃 **Melancias fugitivas** — depois de 15 pontos, algumas fogem devagarinho (perseguição engraçada)
-6. 🤰 **Barriguinha** — Magali cresce um tiquinho por alguns segundos a cada melancia
-7. 🍰 **Petiscos bônus** — bolo ou sorvete ocasional valendo 2 pontos
-8. 🐱 **Mingau** — o gato dela passeia e "rouba" melancias se chegar primeiro (sem tirar ponto)
-9. 🌅 **Fundo dinâmico** — dia → pôr do sol → noite com estrelas conforme a pontuação
-10. 📲 **PWA** — instalável com ícone na tela inicial, tela cheia e offline
+**Novos jogos para a coleção:**
+10. 🎨 Pintar e Colorir — desenhos de contorno pintados com o dedo
+11. 👗 Ateliê da Magali — vestir a Magali com roupas e cenários
+12. 🫧 Estourar Bolhas — bolhas sobem e estouram com nota musical
+13. 🔢 Contar bichinhos — quantos tem na tela?
+
+**Geral:**
+14. 📲 PWA — instalável com ícone na tela inicial, tela cheia e offline
 
 ## Créditos
 
-- Personagem Magali © Mauricio de Sousa Produções — projeto de fã, pessoal e sem fins comerciais
+- Personagens © Mauricio de Sousa Produções — projeto de fã, pessoal e sem fins comerciais
+- Imagens dos personagens: [Wiki Turma da Mônica](https://turmadamonica.fandom.com/pt-br)
 - Feito com [Claude Code](https://claude.com/claude-code)

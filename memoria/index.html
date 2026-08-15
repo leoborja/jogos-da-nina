@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#cbb6f2">
+<title>Memória da Turma 🧠</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: "Comic Sans MS", "Chalkboard SE", cursive, sans-serif;
+    background: linear-gradient(170deg, #f6c7e8 0%, #cbb6f2 60%, #aee9f5 100%);
+    color: #4a2c6d;
+  }
+  body { display: flex; flex-direction: column; }
+
+  /* ---------- topo ---------- */
+  header {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px 4px;
+  }
+  .casinha {
+    text-decoration: none;
+    background: rgba(255,255,255,0.9);
+    border: 3px solid #a76fd6;
+    border-radius: 999px;
+    padding: 2px 12px 4px;
+    font-size: 24px;
+    line-height: 1.2;
+    box-shadow: 0 3px 0 #8a55b8;
+  }
+  .casinha:active { transform: translateY(2px); box-shadow: 0 1px 0 #8a55b8; }
+  h1 {
+    flex: 1;
+    text-align: center;
+    font-size: clamp(19px, 5.5vw, 30px);
+    color: #7b2fb5;
+    text-shadow: 2px 2px 0 #fff;
+    white-space: nowrap;
+  }
+  .contador {
+    background: rgba(255,255,255,0.9);
+    border: 3px solid #2e9e44;
+    border-radius: 999px;
+    padding: 3px 14px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #1f7530;
+    white-space: nowrap;
+    transition: transform 0.15s;
+  }
+
+  /* ---------- tabuleiro ---------- */
+  #tabuleiro-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    min-height: 0;
+  }
+  #tabuleiro {
+    display: grid;
+    gap: 10px;
+    justify-content: center;
+    align-content: center;
+  }
+  .carta {
+    aspect-ratio: 1 / 1.3;
+    perspective: 700px;
+    cursor: pointer;
+  }
+  .interior {
+    position: relative;
+    width: 100%; height: 100%;
+    transition: transform 0.45s cubic-bezier(.4,1.6,.6,1);
+    transform-style: preserve-3d;
+  }
+  .carta.aberta .interior { transform: rotateY(180deg); }
+  .frente, .verso {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .verso {
+    background: #ff4f58;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.16) 0 12px, transparent 12px 24px);
+    border: 4px solid #fff;
+    font-size: 44%;
+  }
+  .frente {
+    background: #fff;
+    border: 4px solid #ffd76b;
+    transform: rotateY(180deg);
+    flex-direction: column;
+    padding: 4px;
+  }
+  .frente img {
+    flex: 1;
+    min-height: 0;
+    max-width: 92%;
+    object-fit: contain;
+  }
+  .frente .nome {
+    flex: none;
+    font-size: 13px;
+    color: #7b2fb5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .carta.par { pointer-events: none; }
+  .carta.par .frente {
+    border-color: #2e9e44;
+    background: #eaffe9;
+    animation: comemora 0.5s ease;
+  }
+  @keyframes comemora {
+    0%   { transform: rotateY(180deg) scale(1) }
+    45%  { transform: rotateY(180deg) scale(1.16) rotate(4deg) }
+    100% { transform: rotateY(180deg) scale(1) }
+  }
+  .carta.travada { pointer-events: none; }
+
+  footer {
+    flex: none;
+    text-align: center;
+    padding: 2px 0 6px;
+    font-size: 14px;
+    color: #5d3a86;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  }
+  #trofeus { font-size: 15px; color: #7b2fb5; }
+
+  /* ---------- estrelinhas do par ---------- */
+  .brilho {
+    position: fixed;
+    font-size: 26px;
+    pointer-events: none;
+    z-index: 40;
+    animation: sobe 0.9s ease-out forwards;
+  }
+  @keyframes sobe {
+    0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 1 }
+    100% { transform: translate(-50%, -190%) scale(1.5); opacity: 0 }
+  }
+
+  /* ---------- festa de vitória ---------- */
+  #festa {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(2px);
+  }
+  #festa.on { display: flex; }
+  #festa .caixa {
+    background: #fff;
+    border: 6px solid #ffd76b;
+    border-radius: 30px;
+    padding: 22px 30px 26px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    animation: pula 0.5s cubic-bezier(.3,1.7,.5,1);
+  }
+  @keyframes pula {
+    0%   { transform: scale(0.3) rotate(-8deg); opacity: 0 }
+    100% { transform: scale(1) rotate(0); opacity: 1 }
+  }
+  #festa h2 {
+    font-size: clamp(30px, 9vw, 48px);
+    color: #e63329;
+    text-shadow: 2px 2px 0 #ffd76b;
+  }
+  #festa p { margin-top: 8px; font-size: 20px; color: #2e7d32; }
+  #festa button {
+    margin-top: 16px;
+    font-family: inherit;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    background: #2e9e44;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 34px;
+    box-shadow: 0 5px 0 #1f7530;
+    cursor: pointer;
+  }
+  #festa button:active { transform: translateY(3px); box-shadow: 0 2px 0 #1f7530; }
+  .confete {
+    position: fixed;
+    top: -30px;
+    width: 12px; height: 18px;
+    border-radius: 3px;
+    z-index: 45;
+    pointer-events: none;
+    animation: cai linear forwards;
+  }
+  @keyframes cai {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1 }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0.9 }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="casinha" href="../" title="Voltar pros jogos">🏠</a>
+  <h1>🧠 Memória da Turma</h1>
+  <div class="contador" id="contador">0/6</div>
+</header>
+
+<div id="tabuleiro-wrap"><div id="tabuleiro"></div></div>
+
+<footer>
+  <div id="trofeus"></div>
+  feito por Marina Vaz 💚
+</footer>
+
+<div id="festa">
+  <div class="caixa">
+    <h2 id="festa-titulo">PARABÉNS! 🎉</h2>
+    <p id="festa-texto">Você achou todos os pares!</p>
+    <button id="denovo">Jogar de novo 🔁</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const TURMA = [
+    { id: 'monica',    nome: 'Mônica' },
+    { id: 'magali',    nome: 'Magali' },
+    { id: 'cebolinha', nome: 'Cebolinha' },
+    { id: 'cascao',    nome: 'Cascão' },
+    { id: 'chico',     nome: 'Chico Bento' },
+    { id: 'franjinha', nome: 'Franjinha' },
+    { id: 'bidu',      nome: 'Bidu' },
+    { id: 'titi',      nome: 'Titi' }
+  ];
+
+  const tabuleiro = document.getElementById('tabuleiro');
+  const wrap = document.getElementById('tabuleiro-wrap');
+  const contadorEl = document.getElementById('contador');
+  const trofeusEl = document.getElementById('trofeus');
+  const festaEl = document.getElementById('festa');
+  const festaTitulo = document.getElementById('festa-titulo');
+  const festaTexto = document.getElementById('festa-texto');
+
+  // nível 1 = 4 pares, 2 = 6 pares, 3+ = 8 pares
+  let nivel = 1;
+  let cartas = [];        // {el, id, nome, achada}
+  let viradas = [];       // cartas abertas esperando comparação
+  let paresFeitos = 0;
+  let travado = false;
+
+  function paresDoNivel(n) { return Math.min(2 + n * 2, TURMA.length); }
+
+  // ---------- som ----------
+  let audioCtx = null;
+  function ligaAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
+  }
+  function nota(freq, inicio, dur, vol = 0.22, tipo = 'triangle') {
+    if (!audioCtx) return;
+    const t = audioCtx.currentTime + inicio;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = tipo;
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  const somVira  = () => nota(660, 0, 0.09, 0.14, 'sine');
+  const somPar   = () => { nota(659, 0, 0.14); nota(880, 0.1, 0.22); };
+  const somErro  = () => nota(320, 0, 0.12, 0.1, 'sine');
+  const somFesta = () => [523, 659, 784, 1047, 1319].forEach((f, i) => nota(f, i * 0.11, 0.35, 0.2));
+
+  // ---------- troféus (localStorage) ----------
+  function pegaTrofeus() {
+    const n = parseInt(localStorage.getItem('nina_memoria_trofeus') || '0', 10);
+    return isNaN(n) ? 0 : n;
+  }
+  function mostraTrofeus() {
+    const n = pegaTrofeus();
+    trofeusEl.textContent = n > 0 ? '🏆 ' + n + (n === 1 ? ' jogo completo!' : ' jogos completos!') : '';
+  }
+
+  // ---------- montar o jogo ----------
+  function embaralha(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function novoJogo() {
+    const qtd = paresDoNivel(nivel);
+    const escolhidos = embaralha(TURMA.slice()).slice(0, qtd);
+    const baralho = embaralha(escolhidos.concat(escolhidos));
+
+    tabuleiro.innerHTML = '';
+    cartas = [];
+    viradas = [];
+    paresFeitos = 0;
+    travado = false;
+
+    baralho.forEach((p, i) => {
+      const el = document.createElement('div');
+      el.className = 'carta';
+      el.innerHTML =
+        '<div class="interior">' +
+          '<div class="verso">🍉</div>' +
+          '<div class="frente">' +
+            '<img src="img/' + p.id + '.png" alt="' + p.nome + '">' +
+            '<div class="nome">' + p.nome + '</div>' +
+          '</div>' +
+        '</div>';
+      const carta = { el, id: p.id, nome: p.nome, achada: false, indice: i };
+      el.addEventListener('click', () => clica(carta));
+      tabuleiro.appendChild(el);
+      cartas.push(carta);
+    });
+
+    atualizaContador();
+    ajustaLayout();
+
+    // espiadinha: mostra todas por 1,2s no comecinho (ajuda e deixa gostoso)
+    cartas.forEach(c => c.el.classList.add('aberta'));
+    travado = true;
+    setTimeout(() => {
+      cartas.forEach(c => c.el.classList.remove('aberta'));
+      travado = false;
+    }, 1200);
+  }
+
+  function atualizaContador() {
+    contadorEl.textContent = paresFeitos + '/' + paresDoNivel(nivel);
+    contadorEl.style.transform = 'scale(1.25)';
+    setTimeout(() => { contadorEl.style.transform = 'scale(1)'; }, 150);
+  }
+
+  // ---------- layout: escolhe o nº de colunas que deixa as cartas maiores ----------
+  function ajustaLayout() {
+    const n = cartas.length;
+    if (!n) return;
+    const gap = 10;
+    const AR = 1.3; // altura / largura da carta
+    const cw = wrap.clientWidth - 20;
+    const ch = wrap.clientHeight - 12;
+    let melhor = { largura: 0, cols: 2 };
+    for (let c = 2; c <= n; c++) {
+      if (n % c !== 0) continue;   // só grades cheias (sem carta sobrando na última linha)
+      const linhas = n / c;
+      const w = (cw - gap * (c - 1)) / c;
+      const h = (ch - gap * (linhas - 1)) / linhas;
+      const largura = Math.min(w, h / AR);
+      if (largura > melhor.largura) melhor = { largura, cols: c };
+    }
+    const L = Math.floor(Math.min(melhor.largura, 170));
+    tabuleiro.style.gridTemplateColumns = 'repeat(' + melhor.cols + ', ' + L + 'px)';
+    tabuleiro.querySelectorAll('.frente .nome').forEach(el => {
+      el.style.fontSize = Math.max(9, Math.min(16, L * 0.13)) + 'px';
+    });
+    tabuleiro.querySelectorAll('.verso').forEach(el => {
+      el.style.fontSize = Math.round(L * 0.42) + 'px';
+    });
+  }
+  window.addEventListener('resize', ajustaLayout);
+  window.addEventListener('orientationchange', () => setTimeout(ajustaLayout, 300));
+
+  // ---------- jogar ----------
+  function clica(carta) {
+    ligaAudio();
+    if (travado || carta.achada || viradas.includes(carta)) return;
+
+    carta.el.classList.add('aberta');
+    somVira();
+    viradas.push(carta);
+
+    if (viradas.length < 2) return;
+
+    const [a, b] = viradas;
+    travado = true;
+
+    if (a.id === b.id) {
+      // achou o par!
+      setTimeout(() => {
+        a.achada = b.achada = true;
+        a.el.classList.add('par');
+        b.el.classList.add('par');
+        estrelinhas(a.el); estrelinhas(b.el);
+        somPar();
+        paresFeitos++;
+        atualizaContador();
+        viradas = [];
+        travado = false;
+        if (paresFeitos === paresDoNivel(nivel)) setTimeout(venceu, 550);
+      }, 320);
+    } else {
+      // não era par: vira de volta com calma, sem drama
+      somErro();
+      setTimeout(() => {
+        a.el.classList.remove('aberta');
+        b.el.classList.remove('aberta');
+        viradas = [];
+        travado = false;
+      }, 900);
+    }
+  }
+
+  function estrelinhas(el) {
+    const r = el.getBoundingClientRect();
+    ['⭐', '✨', '💚'].forEach((s, i) => {
+      const d = document.createElement('div');
+      d.className = 'brilho';
+      d.textContent = s;
+      d.style.left = (r.left + r.width * (0.25 + i * 0.25)) + 'px';
+      d.style.top = (r.top + r.height * 0.4) + 'px';
+      d.style.animationDelay = (i * 0.08) + 's';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 1100);
+    });
+  }
+
+  function confetes() {
+    const cores = ['#ff4f58', '#2e9e44', '#ffd76b', '#7b2fb5', '#4fc3f7', '#ff8fd0'];
+    for (let i = 0; i < 70; i++) {
+      const c = document.createElement('div');
+      c.className = 'confete';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = cores[Math.floor(Math.random() * cores.length)];
+      c.style.animationDuration = (1.8 + Math.random() * 1.6) + 's';
+      c.style.animationDelay = (Math.random() * 0.6) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4200);
+    }
+  }
+
+  function venceu() {
+    const t = pegaTrofeus() + 1;
+    localStorage.setItem('nina_memoria_trofeus', t);
+    mostraTrofeus();
+    somFesta();
+    confetes();
+    const titulos = ['PARABÉNS! 🎉', 'ARRASOU! 🌟', 'UAU! 🎊', 'BOA, NINA! 💚'];
+    festaTitulo.textContent = titulos[Math.floor(Math.random() * titulos.length)];
+    const proximo = paresDoNivel(nivel + 1);
+    festaTexto.textContent = proximo > paresDoNivel(nivel)
+      ? 'Achou todos os pares! Agora vem com ' + proximo + ' pares! 😃'
+      : 'Achou todos os pares de novo! 😃';
+    festaEl.classList.add('on');
+  }
+
+  document.getElementById('denovo').addEventListener('click', () => {
+    festaEl.classList.remove('on');
+    nivel++;
+    novoJogo();
+  });
+
+  // liga o áudio no primeiro toque em qualquer lugar
+  window.addEventListener('pointerdown', ligaAudio, { once: true });
+  window.addEventListener('keydown', ligaAudio, { once: true });
+
+  mostraTrofeus();
+  novoJogo();
+
+  // hook para testes automatizados
+  window.__debug = {
+    get cartas() { return cartas; },
+    getPares: () => paresFeitos,
+    getNivel: () => nivel,
+    clicar: i => clica(cartas[i]),
+    // resolve o jogo sozinho (usado só em teste)
+    resolver: () => {
+      const porId = {};
+      cartas.forEach(c => { (porId[c.id] = porId[c.id] || []).push(c); });
+      const grupos = Object.values(porId);
+      let atraso = 0;
+      grupos.forEach(g => {
+        setTimeout(() => { clica(g[0]); clica(g[1]); }, atraso);
+        atraso += 600;
+      });
+    }
+  };
+})();
+</script>
+</body>
+</html>
