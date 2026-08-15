@@ -39,7 +39,9 @@ Baixar com `curl -L -A "Mozilla/5.0"` e reduzir com `sips -Z 260 *.png` (mantém
 
 - Repo: `leoborja/jogos-da-nina` (GitHub, público) — `gh` já autenticado como `leoborja`
 - URL: https://leoborja.github.io/jogos-da-nina/ (GitHub Pages, branch `main`, path `/`)
-- O repo antigo era `magali-melancia`; o GitHub redireciona a URL antiga automaticamente.
+- O repo antigo era `magali-melancia`. O GitHub redireciona a URL do *repositório*, mas **não**
+  a do Pages: `leoborja.github.io/magali-melancia/` dá 404. Se alguém tiver o link antigo salvo,
+  a solução é criar um repo `magali-melancia` só com um `index.html` de redirect.
 - Pasta local ainda se chama `~/amagalimelancia` (não renomeada para não quebrar nada).
 - Publicar = commit + push; rebuild leva ~30-60s. Verificar com:
   `curl -s https://leoborja.github.io/jogos-da-nina/ | grep <string-nova>`
